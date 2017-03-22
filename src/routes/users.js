@@ -25,10 +25,11 @@ router.post('/',(req,res) => {
         isVerified: false,
         language: 'en'
       });
-    //console.log(newUser);
+
     newUser.save()
      .then(user => res.json({success: true}))
-     .catch( err => res.status(400).json( { email: handleDBError(err) } )) //{ email: handleDBError(err)}
+     .catch( err => res.status(400).json(
+        { email: handleDBError(err) } )) //{ email: handleDBError(err)}
   }else {
     res.status(400).json(errors);
   }
