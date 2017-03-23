@@ -6,15 +6,26 @@ import config from '../config';
 
 let router = express.Router();
 
+
+/**
+ *  BaseURI: /api/auth
+ *  POST endpoint
+ *  
+ * 
+ * @param  {} '/'
+ * @param  {} (req
+ * @param  {} res
+ */
 router.post('/',(req,res) => {
   const {identifier, password } = req.body;
 
   console.log('hello from auth-router.js');
 
-  User.findOne({email: identifier })
+  User.findOne({'local.email': identifier })
     .then((usr) => {
       if (usr){
-        if(bcrypt.compareSync(password,usr.password)){
+        console.log('passwd ',usr.local.password);
+        if(bcrypt.compareSync(password,usr.local.password)){
           console.log('id: ' + usr._id);
 
           const token = jwt.sign(

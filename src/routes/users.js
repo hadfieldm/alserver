@@ -12,19 +12,19 @@ function handleDBError(err) {
 }
 
 router.post('/',(req,res) => {
-
   const {errors, isValid} = validateInput(req.body);
 
   if (isValid){
     const { email, username, password, timezone } = req.body;
-    let newUser = new User(
-      { email: email, 
+    let newUser = new User({
+      local: { 
+        email: email, 
         username: username,
         password: bcrypt.hashSync(password, 10), 
         timezone: timezone,
         isVerified: false,
-        language: 'en'
-      });
+        language: 'en' }
+    });
 
     newUser.save()
      .then(user => res.json({success: true}))

@@ -4,7 +4,8 @@ import path from 'path';
 
 import mongoose from 'mongoose';
 import users from './routes/users';
-import auth from './routes/auth';
+import googleUserServices from './routes/user';
+import localUserServices from './routes/auth';
 import events from './routes/events';
 
 import User from './models/User';
@@ -19,7 +20,8 @@ app.use(bodyParser.json());
 //
 // post all CRUD operations to this url.
 app.use('/api/users', users);
-app.use('/api/auth', auth);
+app.use('/api/user/google', googleUserServices);
+app.use('/api/auth', localUserServices);
 app.use('/api/events', events);
 
 app.listen(6080, () => console.log('Server started on port 6080'));
