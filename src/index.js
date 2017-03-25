@@ -3,8 +3,7 @@ import bodyParser from 'body-parser';
 import path from 'path';
 
 import mongoose from 'mongoose';
-import users from './routes/users';
-import googleUserServices from './routes/user';
+import userServices from './routes/user';
 import localUserServices from './routes/auth';
 import events from './routes/events';
 
@@ -17,10 +16,7 @@ mongoose.connect('localhost:27017/users',()=> console.log('connecting to mongo')
 
 app.use(bodyParser.json());
 
-//
-// post all CRUD operations to this url.
-app.use('/api/users', users);
-app.use('/api/user/google', googleUserServices);
+app.use('/api/user', userServices);
 app.use('/api/auth', localUserServices);
 app.use('/api/events', events);
 

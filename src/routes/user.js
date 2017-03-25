@@ -4,32 +4,71 @@ import bcrypt from 'bcrypt';
 import User from '../models/User';
 import ErrorCodes from '../models/DbCodes';
 
+function handleDBError(err) {
+  const {code, index, errmsg, op} = err;
+  return ErrorCodes[code];
+}
+
 let router = express.Router();
 
 /**
- * REST API: /api/user/google 
+ * REST API: /api/user/ 
  * 
  * All google social interaction-requests come to this endpoint
  * 
+ * 
+ *  - POST http://api/usr
+ * 
  *  - GET http://api/usr/google/{:google_profile_id}
  * 
- *  - PUT http://api/usr/google/{:google_profile_id}
+ *  - POST http://api/usr/google/{:google_profile_id}
  * 
  * 
  */
 
+
+/**
+ * POST
+ * 
+ * @param  {} '/'
+ * @param  {} req
+ * @param  {} res
+ */
+router.post('/',(req,res) => {
+  const {errors, isValid} = validateInput(req.body);
+
+  if (isValid){
+    const { email, username, password, timezone } = req.body;
+    let newUser = new User({
+      local: { 
+        email: email, 
+        username: username,
+        password: bcrypt.hashSync(password, 10), 
+        timezone: timezone,
+        isVerified: false,
+        language: 'en' }
+    });
+
+    newUser.save()
+     .then(user => res.json({success: true}))
+     .catch( err => res.status(400).json(
+        { email: handleDBError(err) } )) //{ email: handleDBError(err)}
+  }else {
+    res.status(400).json(errors);
+  }
+});
 
 
 /**
  * GET
  * 
- * @param  {:google_profile_id}
+ * @param  /google/{:google_profile_id}
  * @param  {} req.params - contains google_profile_id
  * @param  {} res
  *             200 on successfully finding existing user
  *             400 otherwise
  */
-router.get('/:google_profile_id', (req,res) => {
+router.get('/google/:google_profile_id', (req,res) => {
 
   console.log('google_profile_id:', req.params.google_profile_id);
 
@@ -46,14 +85,17 @@ router.get('/:google_profile_id', (req,res) => {
 });
 
 
+
+
+
 /**
- * PUT
+ * POST
  * 
- * @param  {:google_profile_id}
+ * @param  /google/{:google_profile_id}
  * @param  {} req
  * @param  {} res
  */
-router.put('/:google_profile_id',(req,res) => {
+router.post('/google/:google_profile_id',(req,res) => {
 
   console.log('put request:', req.params.google_profile_id);
 
@@ -70,7 +112,7 @@ router.put('/:google_profile_id',(req,res) => {
   console.log('newUser.id: ', newUser.google.id);
 
   newUser.save()
-  .then(user => res.json( { id: newUser.id } ))
+  .then(user => res.json( newUser))  //{ id: newUser.google.id } 
   .catch( err => res.status(400).json(
     { email: err } ))
 });
