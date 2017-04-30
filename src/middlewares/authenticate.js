@@ -1,6 +1,9 @@
 import jwt from 'jsonwebtoken';
 import config from '../config'; //we store the secret here. we use it below
+import log4js from 'log4js';
 
+log4js.configure('./src/cfg/log4js-config.json');
+const logger = log4js.getLogger('server');
 
 export default (req, res, next) => {
   //first get the token
@@ -17,11 +20,11 @@ export default (req, res, next) => {
     //if we have token verify it
     jwt.verify(token, config.jwtSecret, (err, decoded) =>{
       if(err){
-        res.status(401).json({error: "Failed to authenticate"});
+        logger.debug('[middleware]:[authenticate]:[error]::Failed to Authenticate');
+        res.status(401).json({error: "Failed to Authenticate"});
       }else{
-        console.log("decoded :" + JSON.stringify(decoded));
-        console.log("username :" + decoded.username);
-        console.log("id :" + decoded.id);
+        logger.debug('[middleware]:[authenticate]:[id]::',decoded.id);
+        logger.debug('[middleware]:[authenticate]:[username]::',decoded.username);
         req.currentUser  = {
           id: decoded.id,
           username: decoded.username
@@ -30,6 +33,7 @@ export default (req, res, next) => {
       }
     });
   } else{
+    logger.error('[middleware]:[authenticate]:[error]::No token provided');  
     res.status(403).json({
       error: "No token provided"
     });
