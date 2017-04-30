@@ -65,8 +65,11 @@ router.post('/token',(req,res) => {
   const {errors, isValid} = validateTokenInput(req.body);
 
   if (isValid){
-    const usr = req.body;
-    const token = jwt.sign({ id: usr._id, username: usr.email }, config.jwtSecret);
+    const {user} = req.body;
+    logger.debug('[post]:[/api/auth/token]:[id]::',user.id );
+    logger.debug('[post]:[/api/auth/token]:[email]::',user.email );
+    //const token = jwt.sign({ id: user.id, email: user.email }, config.jwtSecret);
+    const token = jwt.sign({ id: user.id }, config.jwtSecret);
 
     logger.debug('[post]:[/api/auth/token]:[token]::',token );
     res.status(200).json({token});
