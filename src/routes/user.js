@@ -88,21 +88,22 @@ router.post('/',(req,res) => {
  *             404 otherwise
  *************************************************************/
 router.get('/google/:google_profile_id', (req,res) => {
-  logger.debug('[get]:[/api/user/google]:[google_profile_id]::',req.params.google_profile_id);
+  logger.debug('[get]:[/api/user/google]:]:[google_profile_id]::',req.params.google_profile_id);
   User.findOne( {'google.id': req.params.google_profile_id } )
   .then( (usr) => {
     if (usr) {
-      logger.error('[get]:[/api/user/google]:[user]::',usr);
+      logger.debug('[get]:[/api/user/google]:]:[user]::',usr);
       res.status(200).json( usr);
     } 
     else {
-      logger.error('[get]:[/api/user/google]:[error]::user not found');
+      logger.error('[get]:[/api/user/google]:]:[error]::user not found');
       res.status(404).json( {failure: 'user not found'} );
     }
+  })
+  .catch(function(error){
+    logger.error('[get]:[/api/user/google]:]:[error]::failed to query db collection');
   });
 });
-
-
 
 
 /*************************************************************
@@ -110,7 +111,7 @@ router.get('/google/:google_profile_id', (req,res) => {
  * POST /google/{:google_profile_id}
  * 
  * @param:  {:google_profile_id}
- * @arg: { id, token, email, name }
+ * @arg: { id, email, name }
  * @returns: 
  *  200 - updates 
  *  400 - error
@@ -118,14 +119,13 @@ router.get('/google/:google_profile_id', (req,res) => {
  *************************************************************/
 router.post('/google/:google_profile_id',(req,res) => {
   logger.debug('[post]:[/api/user/google]:[request]::',req.body);
-  const { id, token, email, name } = req.body;
+  const { id,  email, name } = req.body;
 
   logger.debug('[post]:[/api/user/google]:[google_profile_id]::',req.params.google_profile_id);
   
   let newUser = new User({
     google: { 
       id: id, 
-      token: token,
       email: email,
       name: name}
     });
@@ -164,12 +164,17 @@ router.post('/google/cookie/jwt',(req,res) => {
         logger.debug('[post]:[/api/user/google/cookie/jwt]:[session]::',session);
         var jsonSession = JSON.parse(session);
         const {errors, isValid} = validateSession(jsonSession);
+        if (!isValid){
+            logger.error('[post]:[/api/user/google/cookie/jwt][error]::', errors);
+            return res.status(500).json(errors);
+        }
         const rec = { 
           user: {
                 id: jsonSession['passport'].user._id,
                 email: jsonSession['passport'].user['google'].email 
               }
         };
+        logger.debug('[post]:[/api/user/google/cookie/jwt]:[user]::',rec)
 
         axios.post('http://localhost:6080/api/auth/token', rec)
           .then(t_res => {

@@ -4,6 +4,8 @@ import bcrypt from 'bcrypt';
 import FEsessions from '../models/Sessions';
 import ErrorCodes from '../models/DbCodes';
 import log4js from 'log4js';
+import jwt from 'jsonwebtoken';
+import config from '../config';
 
 log4js.configure('./src/cfg/log4js-config.json');
 const logger = log4js.getLogger('server');
@@ -39,6 +41,41 @@ router.get('/:session_id', (req,res) => {
       res.status(404).json( {failure: 'session not found'} );
     }
   });
+});
+
+/*************************************************************
+ *************************************************************
+ * DELETE
+ * 
+ * @param  /session/{:jwtToken}
+ * @param  {} req.params.session_id - contains session_id
+ * @param  {} res
+ *             200 on successfully finding existing user
+ *             400 otherwise
+ *************************************************************/
+router.delete('/:jwtToken', (req,res) => {
+  logger.debug('[delete]:[/session]:[jwtToken]::',req.params.jwtToken);
+
+  jwt.verify(req.params.jwtToken, config.jwtSecret, (err, decoded) =>{
+      if(err){
+        logger.debug('[delete]:[/session]:[error]::Failed decoding');
+        res.status(401).json({error: "Failed decoding"});
+      }else{
+        logger.debug('[delete]:[/session]:[decoded]::',decoded.id);
+        //logger.debug('[delete]:[/session]:[email]::',decoded.email);
+         FEsessions.findById(req.params.jwtToken)
+          .then(ses => {
+            if (ses) {
+              logger.debug('[delete]:[/session]:[session]::',ses);
+              res.status(200).json(ses);
+            } 
+            else {
+              logger.error('[delete]:[/session]:[error]::session not found');
+              res.status(404).json( {failure: 'session not found'} );
+            }
+          });
+      }
+  })
 });
 
 export default router;

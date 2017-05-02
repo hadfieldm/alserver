@@ -19,13 +19,12 @@ export const passportSchema = {
             "__v":{"type": "integer"},
             "google":{
                 "id":{"type": "string"},
-                "token":{"type": "string"},
                 "email":{"type": "string"},
                 "name":{"type": "string"}
             }
         }
     },
-    "required": ["_id", "email"]
+    "required": ["user"]
 }
 
 export const cookieSchema = {

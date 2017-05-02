@@ -16,7 +16,6 @@ let userSchema = new mongoose.Schema ({
   },
   google: {
     id    :  {type: String, required: false},
-    token :  {type: String, required: false},
     email :  {type: String, required: false, trim: true},
     name  :  {type: String, required: false}
   }
