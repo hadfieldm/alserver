@@ -40,6 +40,9 @@ router.get('/:session_id', (req,res) => {
       logger.error('[get]:[/session]:[error]::session not found');
       res.status(404).json( {failure: 'session not found'} );
     }
+  })
+  .catch(function(error){
+    logger.error('[get]:[/session]:[session]::failed to query db collection');
   });
 });
 
