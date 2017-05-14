@@ -48,6 +48,34 @@ router.get('/:session_id', (req,res) => {
 
 /*************************************************************
  *************************************************************
+ * GET
+ * 
+ * @param  /session/{:id/session_id}
+ * @param  {} req.params.session_id - contains session_id
+ * @param  {} res
+ *             200 on successfully finding existing user
+ *             400 otherwise
+ *************************************************************/
+router.get('/id/:session_id', (req,res) => {
+  logger.debug('[get]:[/session/id]:[session_id]::',req.params.session_id);
+  FEsessions.findById(req.params.session_id)
+  .then(ses => {
+    if (ses) {
+      logger.debug('[get]:[/session/id]:[session]::',ses);
+      res.status(200).json(ses);
+    } 
+    else {
+      logger.error('[get]:[/session/id]:[error]::session not found');
+      res.status(404).json( {failure: 'session not found'} );
+    }
+  })
+  .catch(function(error){
+    logger.error('[get]:[/session/id]:[session]::failed to query db collection');
+  });
+});
+
+/*************************************************************
+ *************************************************************
  * DELETE
  * 
  * @param  /session/{:jwtToken}
