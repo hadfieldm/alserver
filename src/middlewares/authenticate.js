@@ -1,9 +1,8 @@
 import jwt from 'jsonwebtoken';
-import config from 'config'; //we store the secret here. we use it below
+import config from 'config';
 import log4js from 'log4js';
 
 var token = config.get('Token');
-
 log4js.configure('./src/cfg/log4js-config.json');
 const logger = log4js.getLogger('server');
 

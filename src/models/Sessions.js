@@ -19,7 +19,6 @@ let sessionSchema = new mongoose.Schema ({
                 google:
                     {
                         id: {type: mongoose.Schema.Types.ObjectId, required : true},
-                     //   token: { type: String,required : true},
                         email:{ type: String,required : true},
                         name: { type: String,required : true}
                     }
