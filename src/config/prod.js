@@ -1,7 +1,7 @@
 module.exports = {
 
     Mongo: {
-        host: 'localhost',
+        host: '10.0.2.45',
         port: 27017
     },
 
