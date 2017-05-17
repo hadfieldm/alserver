@@ -30,5 +30,5 @@ let sessionSchema = new mongoose.Schema ({
 });   
 
 mongoose.Promise = es6Promise.Promise;
-//export default mongoose.model('fesessions', sessionSchema);
+
 export default connections.feSessionConn.model('fesessions', sessionSchema, 'sessions');
