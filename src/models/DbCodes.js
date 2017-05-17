@@ -4,8 +4,6 @@ ErrorCodes[2] = "Bad Value Provided";
 ErrorCodes[11000] = "Email address already exists";
 
 export default ErrorCodes;
-
-
 // MONGO_BAD_VALUE                 => 2,
 // UNKNOWN_ERROR             => 8,
 // NAMESPACE_NOT_FOUND       => 26,
