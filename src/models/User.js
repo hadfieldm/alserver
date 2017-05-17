@@ -1,4 +1,3 @@
-//import React from 'react';
 import mongoose from 'mongoose';
 import es6Promise from 'es6-promise';
 import connections from './connections';
