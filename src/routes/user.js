@@ -6,13 +6,16 @@ import bcrypt from 'bcrypt';
 import User from '../models/User';
 import ErrorCodes from '../models/DbCodes';
 import jwt from 'jsonwebtoken';
-import config from '../config';
+import config from 'config';
 import cookie  from 'react-cookie';
 import cookieParser from 'cookie-parser';
 import log4js from 'log4js';
 
 log4js.configure('./src/cfg/log4js-config.json');
 const logger = log4js.getLogger('server');
+
+
+const token = config.get('Token');
 
 function handleDBError(err) {
   const {code, index, errmsg, op} = err;
@@ -155,7 +158,7 @@ router.post('/google/cookie/jwt',(req,res) => {
   const {errors, isValid} = validateCookie(req.body);
 
   if (isValid){
-    const s_cookie = cookieParser.signedCookie(req.body.ck,config.cookieSecret); 
+    const s_cookie = cookieParser.signedCookie(req.body.ck,token.cookieSecret); 
     logger.debug('[post]:[/api/user/google/cookie/jwt]:[signedCookie]::',s_cookie); 
 
     axios.get('http://localhost:6080/api/session/' + s_cookie)

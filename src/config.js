@@ -1,4 +1,4 @@
-export default {
-  jwtSecret: 'jwtTokenString',
-  cookieSecret: 'keyboard cat'
-}
+// export default {
+//   jwtSecret: 'jwtTokenString',
+//   cookieSecret: 'keyboard cat'
+// }

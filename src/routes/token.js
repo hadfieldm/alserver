@@ -1,6 +1,6 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import config from '../config';
+import config from 'config';
 import { validateTokenInput } from './shared/validations/token';
 
 import log4js from 'log4js';
@@ -10,6 +10,8 @@ const logger = log4js.getLogger('server');
 let router = express.Router();
 
 logger.info('[service]:[/api/v1/token]::initialising');
+
+const tokenP = config.get('Token');
 
 /*************************************************************
  *************************************************************
@@ -34,7 +36,7 @@ router.post('/',(req,res) => {
         const token = jwt.sign(
         { id: usr._id,
             username: usr.email
-        }, config.jwtSecret);
+        }, tokenP.jwtSecret);
 
         logger.debug('[post]:[/api/v1/token]:[token]:',token)
         res.status(200).json({token});

@@ -2,7 +2,7 @@ import express from 'express';
 import User from '../models/User';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import config from '../config';
+import config from 'config';
 import { validateTokenInput, validateCredentialsInput } from './shared/validations/token';
 import jsonschema from 'jsonschema';
 import log4js from 'log4js';
@@ -12,6 +12,8 @@ const logger = log4js.getLogger('server');
 
 let router = express.Router();
 logger.info('[service]:[/api/auth]::initialising');
+
+const tokenP = config.get('Token');
 
 /*************************************************************
  *************************************************************
@@ -33,7 +35,7 @@ router.post('/',(req,res) => {
         if (usr){
           if(bcrypt.compareSync(password,usr.local.password)){
             logger.debug('[post]:[/api/auth]:[id]::',usr._id);
-            const token = jwt.sign({ id: usr._id, username: usr.email }, config.jwtSecret);
+            const token = jwt.sign({ id: usr._id, username: usr.email }, tokenP.jwtSecret);
             res.json({token});
           }else{
             logger.error('[post]:[/api/auth]:[error]::invalid auth cred');
@@ -69,7 +71,7 @@ router.post('/token',(req,res) => {
     logger.debug('[post]:[/api/auth/token]:[id]::',user.id );
     logger.debug('[post]:[/api/auth/token]:[email]::',user.email );
     //const token = jwt.sign({ id: user.id, email: user.email }, config.jwtSecret);
-    const token = jwt.sign({ id: user.id }, config.jwtSecret);
+    const token = jwt.sign({ id: user.id }, tokenP.jwtSecret);
 
     logger.debug('[post]:[/api/auth/token]:[token]::',token );
     res.status(200).json({token});

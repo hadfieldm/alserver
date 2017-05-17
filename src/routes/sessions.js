@@ -5,7 +5,7 @@ import FEsessions from '../models/Sessions';
 import ErrorCodes from '../models/DbCodes';
 import log4js from 'log4js';
 import jwt from 'jsonwebtoken';
-import config from '../config';
+import config from 'config';
 
 log4js.configure('./src/cfg/log4js-config.json');
 const logger = log4js.getLogger('server');
@@ -17,6 +17,8 @@ function handleDBError(err) {
 
 let router = express.Router();
 logger.info('[service]:[/api/session]::initialising');
+
+const tokenP = config.get('Token');
 
 /*************************************************************
  *************************************************************
@@ -87,7 +89,7 @@ router.get('/id/:session_id', (req,res) => {
 router.delete('/:jwtToken', (req,res) => {
   logger.debug('[delete]:[/session]:[jwtToken]::',req.params.jwtToken);
 
-  jwt.verify(req.params.jwtToken, config.jwtSecret, (err, decoded) =>{
+  jwt.verify(req.params.jwtToken, tokenP.jwtSecret, (err, decoded) =>{
       if(err){
         logger.debug('[delete]:[/session]:[error]::Failed decoding');
         res.status(401).json({error: "Failed decoding"});
